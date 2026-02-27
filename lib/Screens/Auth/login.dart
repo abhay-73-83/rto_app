@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+// import 'package:rto_app/Screens/Auth/register.dart';
 import 'package:rto_app/Screens/Dashboard/home.dart';
 import 'package:rto_app/Screens/Permission/permission.dart';
 import 'package:rto_app/Widgets/Custom%20Appbar/custom_appbar.dart';
@@ -137,53 +138,32 @@ class _LoginState extends State<Login> {
     try {
       var resp = await http.post(
         url,
-        body: {
-          "email": mail,
-          "password": password,
-        },
+        body: {"email": mail, "password": password}
       );
 
-      if (resp.statusCode == 200) {
-        var data = jsonDecode(resp.body);
-
-        if (data['success'] == false) {
-          // Invalid credentials Snackbar
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Invalid details. Please try again."),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        } else {
-          // Save login status and email using SharedPref
-          await SharedPref.saveLoginStatus(true);
-          await SharedPref.saveUserEmail(mail);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Login Successful"),
-              duration: Duration(seconds: 2),
-            ),
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Home()),
-          );
-        }
-      } else {
+      var data = jsonDecode(resp.body);
+      if (data['success'] == false) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Server error. Please try again later."),
-          ),
+          SnackBar(content: Text(data['message'] ?? "Login Failed")),
+        );
+      }
+      else
+      {
+        // Save login status and email using SharedPref
+        await SharedPref.saveLoginStatus(true);
+        await SharedPref.saveUserEmail(mail);
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Login Successful")));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Something went wrong. Check your connection."),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error")));
     }
   }
 }
