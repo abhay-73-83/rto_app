@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class QuestionBankScreen extends StatelessWidget {
-  final int id = 1;
+  final int id = 14;
   Future<List<dynamic>> fetchQuestionsFromAPI(int id) async {
     try {
       var url = Uri.parse(
         "https://www.prakrutitech.xyz/abhay/a_view_question_by_id.php?id=$id",
       );
       var response = await http.get(url);
-
       print("API Response: ${response.body}");
 
       if (response.statusCode == 200) {
