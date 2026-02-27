@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
       var data = jsonDecode(resp.body);
       if (data['success'] == false) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? "Login Failed")),
+          SnackBar(content: Text("Invalid add details")),
         );
       }
       else
